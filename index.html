@@ -127,7 +127,7 @@
             const Horn1_wa = 0.711 * Horn1_lambda;  // waveguide width
             const Horn1_wb = 0.355 * Horn1_lambda;  // waveguide height
             const Horn1_wl = 1.657 * Horn1_lambda;  // waveguide length
-            const zf0 = Math.sqrt(mu0 / eps0);
+           ;
 
             const conversionFactor = outputUnit === 'cm' ? 100 : outputUnit === 'mm' ? 1000 : 1;
 
@@ -140,7 +140,7 @@
                 <p>Waveguide width (Horn1_wa): ${(Horn1_wa * conversionFactor).toFixed(3)} ${outputUnit}</p>
                 <p>Waveguide height (Horn1_wb): ${(Horn1_wb * conversionFactor).toFixed(3)} ${outputUnit}</p>
                 <p>Waveguide length (Horn1_wl): ${(Horn1_wl * conversionFactor).toFixed(3)} ${outputUnit}</p>
-                <p>Free space impedance (zf0): ${zf0.toFixed(3)}</p>
+                
             `;
 
             document.getElementById('results').innerHTML = results;
