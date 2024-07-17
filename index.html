@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horn Antenna Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f3e7e9 0%, #e3eeff 100%);
+            transition: background 0.5s;
+            position: relative;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        #toggle-theme {
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 20px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+        }
+        .dark-mode {
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+            color: white;
+        }
+        .dark-mode .container {
+            background: #333;
+            color: white;
+            box-shadow: none;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <button id="toggle-theme">🌙</button>
+    <div class="container">
+        <img src="https://www.elprocus.com/wp-content/uploads/Horn-Antenna-Design.jpg" alt="Horn Antenna Diagram">
+
+        <h1>Horn Antenna Calculator</h1>
+        <form id="antenna-form">
+            <label for="frequency">Frequency:</label>
+            <input type="text" id="frequency" name="frequency" required>
+            <label for="frequency-unit">Frequency Unit:</label>
+            <select id="frequency-unit" name="frequency-unit">
+                <option value="Hz">Hz</option>
+                <option value="kHz">kHz</option>
+                <option value="MHz">MHz</option>
+                <option value="GHz">GHz</option>
+            </select>
+            <label for="unit">Output Unit:</label>
+            <select id="unit" name="unit">
+                <option value="m">m</option>
+                <option value="cm">cm</option>
+                <option value="mm">mm</option>
+            </select>
+            <button type="submit">Calculate</button>
+        </form>
+        <div id="results"></div>
+    </div>
+    <script>
+        document.getElementById('toggle-theme').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        });
+
+        document.getElementById('antenna-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const frequencyInput = document.getElementById('frequency').value;
+            const frequency = parseFloat(frequencyInput);
+            const frequencyUnit = document.getElementById('frequency-unit').value;
+            const outputUnit = document.getElementById('unit').value;
+
+            if (isNaN(frequency)) {
+                alert('Please enter a valid number for frequency.');
+                return;
+            }
+
+            const unitConversions = {
+                'Hz': 1,
+                'kHz': 1e3,
+                'MHz': 1e6,
+                'GHz': 1e9
+            };
+
+            const pi = 3.14159265358979323846;
+            const eps0 = 8.85418781761e-12;
+            const mu0 = pi * 4e-7;
+
+            const c0 = 1 / Math.sqrt(eps0 * mu0);
+            const Horn1_f_ctr = frequency * unitConversions[frequencyUnit];
+            const Horn1_lambda = c0 / Horn1_f_ctr;
+
+            const Horn1_hb = 2.349 * Horn1_lambda;  // height of flare of horn
+            const Horn1_hl = 2.524 * Horn1_lambda;  // length of flare of horn
+            const Horn1_ha = 3.018 * Horn1_lambda;  // width of flare of horn
+            const Horn1_wa = 0.711 * Horn1_lambda;  // waveguide width
+            const Horn1_wb = 0.355 * Horn1_lambda;  // waveguide height
+            const Horn1_wl = 1.657 * Horn1_lambda;  // waveguide length
+            const zf0 = Math.sqrt(mu0 / eps0);
+
+            const conversionFactor = outputUnit === 'cm' ? 100 : outputUnit === 'mm' ? 1000 : 1;
+
+            const results = `
+                <h2>Parameters:</h2>
+                <p>Height of flare of horn (Horn1_hb): ${(Horn1_hb * conversionFactor).toFixed(3)} ${outputUnit}</p>
+                <p>Length of flare of horn (Horn1_hl): ${(Horn1_hl * conversionFactor).toFixed(3)} ${outputUnit}</p>
+                <p>Width of flare of horn (Horn1_ha): ${(Horn1_ha * conversionFactor).toFixed(3)} ${outputUnit}</p>
+                <p>Wavelength (Horn1_lambda): ${(Horn1_lambda * conversionFactor).toFixed(3)} ${outputUnit}</p>
+                <p>Waveguide width (Horn1_wa): ${(Horn1_wa * conversionFactor).toFixed(3)} ${outputUnit}</p>
+                <p>Waveguide height (Horn1_wb): ${(Horn1_wb * conversionFactor).toFixed(3)} ${outputUnit}</p>
+                <p>Waveguide length (Horn1_wl): ${(Horn1_wl * conversionFactor).toFixed(3)} ${outputUnit}</p>
+                <p>Free space impedance (zf0): ${zf0.toFixed(3)}</p>
+            `;
+
+            document.getElementById('results').innerHTML = results;
+        });
+    </script>
+</body>
+</html>
